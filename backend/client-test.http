@@ -1,0 +1,42 @@
+### Category Endpoints ###
+
+# Retorna todas as categorias
+GET http://localhost:3000/category
+
+### Product Endpoints ###
+
+# Retorna todos os produtos
+GET http://localhost:3000/product
+
+# Criar um produto
+POST http://localhost:3000/product
+content-type: application/json
+
+{
+    "categories": ["b81f83f5-b2cd-4f26-bdff-39420598d60c"],
+    "name": "IPad",
+    "qty": 3,
+    "price": 3000.20,
+    "photo": "https://http2.mlstatic.com/D_NQ_NP_2X_764857-MLA52988770506_122022-F.webp"
+}
+
+# Retorna um produto pelo seu id
+GET http://localhost:3000/product/b334a432-09d3-4f94-982f-8c4c6929823b
+
+# Atualizar o produto
+PATCH http://localhost:3000/product/b334a432-09d3-4f94-982f-8c4c6929823b
+content-type: application/json
+
+{
+    "categories": ["b81f83f5-b2cd-4f26-bdff-39420598d60c"],
+    "name": "IPad Air",
+    "qty": 3,
+    "price": 1800.20,
+    "photo": "https://http2.mlstatic.com/D_NQ_NP_2X_764857-MLA52988770506_122022-F.webp"
+}
+
+# Deletar produto
+DELETE http://localhost:3000/product/17beeb3f-3021-4a2a-b920-44a759a0e84c
+
+# Retorna produtos filtrados por nome
+GET http://localhost:3000/product?name=IPad
