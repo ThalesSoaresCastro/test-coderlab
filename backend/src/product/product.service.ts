@@ -2,13 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from '../dto/create-product.dto'
 import { UpdateProductDto } from '../dto/update-product.dto'
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
   constructor(private prisma: PrismaService) {}
 
+
   async findAll(name?: string) {
-    const where = name ? { name: { contains: name } } : {};
+    const where: Prisma.ProductWhereInput = name
+      ? {
+          name: {
+            contains: name,
+            mode: 'insensitive' as Prisma.QueryMode,
+          },
+        }
+      : {};
     return this.prisma.product.findMany({
       where,
       include: {
