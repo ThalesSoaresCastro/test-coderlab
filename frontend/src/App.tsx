@@ -1,32 +1,29 @@
-import { BrowserRouter as Router, Link } from 'react-router-dom';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import CategoryList from './pages/CategoryList';
+import ProductList from './pages/ProductList';
+import { ProductProvider } from './hooks/ProductContext';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
+const theme = createTheme();
 
 function App() {
+  
   return (
-    <ChakraProvider>
+    <ThemeProvider theme={theme}>
+      <ProductProvider>
       <Router>
-        <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/categories">Categorias</Link>
-              </li>
-              <li>
-                <Link to="/products">Produtos</Link>
-              </li>
-              <li>
-                <Link to="/products/create">Criar Produto</Link>
-              </li>
-            </ul>
-          </nav>
-
-        </div>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/categories" element={<CategoryList />} />
+          <Route path="/product" element={<ProductList />} />
+        </Routes>
       </Router>
-    </ChakraProvider>
+      </ProductProvider>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={true} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+    </ThemeProvider>
   );
 }
 

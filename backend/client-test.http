@@ -39,4 +39,4 @@ content-type: application/json
 DELETE http://localhost:3000/product/17beeb3f-3021-4a2a-b920-44a759a0e84c
 
 # Retorna produtos filtrados por nome
-GET http://localhost:3000/product?name=IPad
+GET http://localhost:3000/product?name=Ipad
