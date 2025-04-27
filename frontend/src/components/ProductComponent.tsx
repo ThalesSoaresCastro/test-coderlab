@@ -28,7 +28,7 @@ const ProductComponent = ({ product, onRemove }: ProductComponentProps) => {
             Foto
           </a>
         )}
-        <Box mt={1} display="flex" flexDirection="column">
+        <Box className={styles.containerCategory}>
           {product.categories?.map((category) => (
             <Typography
               key={category.id}
@@ -39,7 +39,7 @@ const ProductComponent = ({ product, onRemove }: ProductComponentProps) => {
             </Typography>
           ))}
         </Box>
-        <Box className={styles.containerCategory}>
+        <Box className={styles.containerButton}>
           <Button
             component={RouterLink}
             to={`/product/${product.id}`}

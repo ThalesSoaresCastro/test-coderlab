@@ -9,10 +9,16 @@
   text-decoration: none;
 }
 
-.containerCategory {
+.containerButton{
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
 }
 
+
+.containerCategory {
+  margin-top: 0.2rem; 
+  display: flex;
+  flex-direction: column;
+}
