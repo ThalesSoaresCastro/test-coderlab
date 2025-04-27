@@ -1,0 +1,25 @@
+.formStyle {
+    align-items: center;
+    padding: 0 10rem 0 10rem;
+}
+
+
+.titleForm {
+    color: black;
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.titleCategoryList {
+    color: black;
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+}
+
+
+.formControlLabel { 
+  color: black;
+  .MuiCheckbox-root {
+    color: #1976d2;
+  }
+}

@@ -1,7 +1,7 @@
 ### Category Endpoints ###
 
 # Retorna todas as categorias
-GET http://localhost:3000/category
+GET http://localhost:5050/category
 
 ### Product Endpoints ###
 

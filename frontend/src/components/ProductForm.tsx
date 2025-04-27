@@ -4,18 +4,26 @@ import {
   TextField,
   Button,
   Typography,
+  FormControlLabel,
+  Checkbox,
+  FormGroup,
 } from '@mui/material';
-import { EditProduct, Product } from '../common/types';
-import { fetchProductUpdateByID } from '../services/ProductService';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import { EditProduct, Category } from '../common/types';
+import { useCategory } from '../hooks/CategoryContext';
+import { fetchProductByID, fetchProductUpdateByID } from '../services/ProductService';
 import { toast } from 'react-toastify';
+import styles from './ProductForm.module.scss';
 
-interface ProductFormProps {
-  product?: Product;
-  onProductUpdated: () => void;
-  onClose: () => void;
+interface ProductFormValues {
+  name: string;
+  qty: number | null;
+  price: number | null;
+  photo: string;
+  categories: string[];
 }
 
-const initialFormValues: EditProduct = {
+const initialFormValues: ProductFormValues = {
   name: '',
   qty: 0,
   price: 0,
@@ -23,31 +31,55 @@ const initialFormValues: EditProduct = {
   categories: [],
 };
 
-function ProductForm({ product, onProductUpdated, onClose }: ProductFormProps) {
-  const isAddMode = !product?.id;
-  const productId = product?.id;
-  const [formValues, setFormValues] = useState<EditProduct>(initialFormValues);
+function ProductForm() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const isAddMode = id === '0';
+  const productId = isAddMode ? null : id;
+  const [formValues, setFormValues] = useState<ProductFormValues>(initialFormValues);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { categories: availableCategories } = useCategory();
 
   useEffect(() => {
-    if (product) {
-      setFormValues({
-        id: product.id,
-        name: product.name || '',
-        qty: product.qty !== null ? product.qty : 0,
-        price: product.price !== null ? product.price : 0,
-        photo: product.photo || '',
-        categories: product.categories?.map(cat => cat.id) || [],
-      });
-    } else {
-      setFormValues(initialFormValues);
+    if (!isAddMode && productId) {
+      setLoading(true);
+      fetchProductByID(productId)
+        .then(data => {
+          if (data) {
+            setFormValues({
+              name: data.name || '',
+              qty: data.qty !== null ? data.qty : 0,
+              price: data.price !== null ? data.price : 0,
+              photo: data.photo || '',
+              categories: data.categories?.map((cat: Category) => cat.id) || [],
+            });
+          } else {
+            setError('Produto não encontrado.');
+          }
+        })
+        .catch(err => {
+          setError('Erro ao carregar os detalhes do produto.');
+          console.error(err);
+          toast.error('Erro ao carregar os detalhes do produto!');
+        })
+        .finally(() => setLoading(false));
     }
-  }, [product]);
+  }, [isAddMode, productId]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
+  };
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = event.target;
+    setFormValues(prevValues => ({
+      ...prevValues,
+      categories: checked
+        ? [...prevValues.categories, value]
+        : prevValues.categories.filter(catId => catId !== value),
+    }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -59,16 +91,17 @@ function ProductForm({ product, onProductUpdated, onClose }: ProductFormProps) {
       if (isAddMode) {
         console.log('Adicionar produto:', formValues);
         toast.info('Funcionalidade de adicionar produto ainda não implementada.');
-        onClose();
+        navigate('/product');
       } else if (productId) {
-        const payload = {
+        const payload: EditProduct = {
           ...formValues,
           qty: typeof formValues.qty === 'string' ? parseInt(formValues.qty, 10) : formValues.qty,
-          price: typeof formValues.price === 'string' ? Number(formValues.price) : formValues.price,
+          price: formValues.price,
+          categories: formValues.categories,
         };
         await fetchProductUpdateByID(payload, productId);
         toast.success('Produto atualizado com sucesso!');
-        onProductUpdated();
+        navigate('/product');
       }
     } catch (err: any) {
       setError('Erro ao salvar o produto.');
@@ -79,9 +112,17 @@ function ProductForm({ product, onProductUpdated, onClose }: ProductFormProps) {
     }
   };
 
+  if (loading) {
+    return <Typography>Carregando formulário...</Typography>;
+  }
+
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
+
   return (
-    <Box>
-      <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
+    <Box className={styles.formStyle}>
+      <Typography gutterBottom className={styles.titleForm}>
         {isAddMode ? 'Adicionar Novo Produto' : 'Editar Produto'}
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -119,18 +160,33 @@ function ProductForm({ product, onProductUpdated, onClose }: ProductFormProps) {
           fullWidth
           margin="normal"
         />
-        <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-          Categorias (A edição de categorias precisará de um componente mais complexo)
+
+        <Typography variant="subtitle1" gutterBottom className={styles.titleCategoryList}>
+          Selecione as Categorias:
         </Typography>
-        {formValues.categories.map(categoryId => (
-          <Typography key={categoryId} variant="body2">- ID: {categoryId}</Typography>
-        ))}
-        <Box mt={3} display="flex" justifyContent="flex-end">
-          <Button onClick={onClose} sx={{ mr: 2 }}>
-            Cancelar
-          </Button>
+        <FormGroup>
+          {availableCategories.map((category) => (
+            <FormControlLabel
+              key={category.id}
+              control={
+                <Checkbox
+                  checked={formValues.categories.includes(category.id)}
+                  onChange={handleCategoryChange}
+                  value={category.id}
+                />
+              }
+              label={category.name}
+              className={styles.formControlLabel}
+            />
+          ))}
+        </FormGroup>
+
+        <Box mt={3}>
           <Button variant="contained" color="primary" type="submit" disabled={loading}>
             {isAddMode ? 'Adicionar' : 'Salvar'}
+          </Button>
+          <Button component={RouterLink} to="/product" sx={{ ml: 2 }}>
+            Cancelar
           </Button>
         </Box>
       </form>

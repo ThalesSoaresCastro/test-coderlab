@@ -8,3 +8,11 @@
   color: rgb(61, 106, 243);
   text-decoration: none;
 }
+
+.containerCategory {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+

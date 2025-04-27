@@ -5,7 +5,7 @@ config();
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1, "Database URL is required"),
-  PORT: z.string().optional().default("3000"),
+  API_PORT: z.string().optional().default("3000"),
 
 });
 

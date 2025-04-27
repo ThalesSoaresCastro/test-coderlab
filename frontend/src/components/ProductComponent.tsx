@@ -2,15 +2,15 @@ import { Box, Button, Card, CardContent, IconButton, Typography } from "@mui/mat
 import { Product } from "../common/types";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { Link as RouterLink } from 'react-router-dom';
 import styles from './ProductComponent.module.scss';
 
 interface ProductComponentProps {
   product: Product;
   onRemove: (id: string) => void;
-  onEdit: (product: Product) => void;
 }
 
-const ProductComponent = ({ product, onRemove, onEdit }: ProductComponentProps) => {
+const ProductComponent = ({ product, onRemove }: ProductComponentProps) => {
   return (
     <Card>
       <CardContent>
@@ -24,28 +24,29 @@ const ProductComponent = ({ product, onRemove, onEdit }: ProductComponentProps) 
           Quantidade: {product.qty}
         </Typography>
         {product.photo && (
-          <a href={product.photo} target="_blank" rel="noopener noreferrer">
+          <a href={product.photo} target="_blank" rel="noopener noreferrer" className={styles.categoryPhoto}>
             Foto
           </a>
         )}
-        <Box mt={1}>
+        <Box mt={1} display="flex" flexDirection="column">
           {product.categories?.map((category) => (
             <Typography
               key={category.id}
               className={styles.categoryName}
               variant="caption"
-            >
-              {category.name}
+            >              
+             {category.name}
             </Typography>
           ))}
         </Box>
-        <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
+        <Box className={styles.containerCategory}>
           <Button
+            component={RouterLink}
+            to={`/product/${product.id}`}
             size="small"
             variant="outlined"
             color="primary"
             startIcon={<EditIcon />}
-            onClick={() => onEdit(product)}
           >
             Editar
           </Button>

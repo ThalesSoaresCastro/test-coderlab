@@ -11,12 +11,12 @@ const fetchProducts = async (filterName?:string): Promise<Product[]> => {
   return data;
 };
 
-const fetchProductByID = async (id:string): Promise<Product[]> => {
+const fetchProductByID = async (id:string): Promise<Product> => {
     const response = await fetch(`${URL_BASE}/${id}`);
     if (!response.ok) {
       throw new Error(`Erro ao carregar o produto: ${response.status}`);
     }
-    const data: Product[] = await response.json();
+    const data: Product = await response.json();
     return data;
 };
 
