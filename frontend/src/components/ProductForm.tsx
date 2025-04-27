@@ -98,7 +98,7 @@ function ProductForm() {
         };
         await fetchProductCreate(payload);
         toast.success(`Produto criado com sucesso!`);
-        navigate('/product');
+        navigate('/');
       } else if (productId) {
         const payload: EditProduct = {
           ...formValues,
@@ -108,7 +108,7 @@ function ProductForm() {
         };
         await fetchProductUpdateByID(payload, productId);
         toast.success('Produto atualizado com sucesso!');
-        navigate('/product');
+        navigate('/');
       }
     } catch (err: any) {
       setError('Erro ao salvar o produto.');
