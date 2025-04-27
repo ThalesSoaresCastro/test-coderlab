@@ -8,7 +8,6 @@ import { Prisma } from '@prisma/client';
 export class ProductService {
   constructor(private prisma: PrismaService) {}
 
-
   async findAll(name?: string) {
     const where: Prisma.ProductWhereInput = name
       ? {
@@ -22,6 +21,9 @@ export class ProductService {
       where,
       include: {
         categories: true,
+      },
+      orderBy: {
+        updated_at: 'desc',
       },
     });
   }

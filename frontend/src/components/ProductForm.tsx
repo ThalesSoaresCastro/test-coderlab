@@ -9,9 +9,9 @@ import {
   FormGroup,
 } from '@mui/material';
 import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
-import { EditProduct, Category } from '../common/types';
+import { EditProduct, Category, CreateProduct } from '../common/types';
 import { useCategory } from '../hooks/CategoryContext';
-import { fetchProductByID, fetchProductUpdateByID } from '../services/ProductService';
+import { fetchProductByID, fetchProductUpdateByID, fetchProductCreate } from '../services/ProductService';
 import { toast } from 'react-toastify';
 import styles from './ProductForm.module.scss';
 
@@ -89,14 +89,21 @@ function ProductForm() {
 
     try {
       if (isAddMode) {
-        console.log('Adicionar produto:', formValues);
-        toast.info('Funcionalidade de adicionar produto ainda não implementada.');
+        const payload: CreateProduct = {
+          name: formValues.name,
+          qty: typeof formValues.qty === 'string' ? parseInt(formValues.qty, 10) : formValues.qty ?? 0,
+          price: typeof formValues.price === 'string' ? Number(formValues.price) : formValues.price ?? 0,
+          photo: formValues.photo,
+          categories: formValues.categories,
+        };
+        await fetchProductCreate(payload);
+        toast.success(`Produto criado com sucesso!`);
         navigate('/product');
       } else if (productId) {
         const payload: EditProduct = {
           ...formValues,
           qty: typeof formValues.qty === 'string' ? parseInt(formValues.qty, 10) : formValues.qty,
-          price: formValues.price,
+          price: typeof formValues.price === 'string' ? Number(formValues.price) : formValues.price ?? 0,
           categories: formValues.categories,
         };
         await fetchProductUpdateByID(payload, productId);

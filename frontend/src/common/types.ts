@@ -24,3 +24,11 @@ export type EditProduct = {
     price?: number | null;
     photo?: string | null;
 }
+
+export type CreateProduct = {
+    categories: string[] | [];
+    name: string;
+    qty: number;
+    price: number;
+    photo?: string | null;
+}

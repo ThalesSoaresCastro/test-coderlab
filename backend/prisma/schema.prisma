@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -15,19 +12,22 @@ datasource db {
 }
 
 model Category {
-  id       String    @id @default(uuid())
-  parentId String?
-  parent   Category? @relation("CategoryToCategory", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryToCategory")
-  name     String
-  products Product[] @relation("ProductToCategory")
+  id        String    @id @default(uuid())
+  parentId  String?
+  parent    Category? @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryToCategory")
+  name      String
+  products  Product[] @relation("ProductToCategory")
+  created_at DateTime   @default(now())
 }
 
 model Product {
-  id         String       @id @default(uuid())
-  categories Category[]   @relation("ProductToCategory")
+  id         String     @id @default(uuid())
+  categories Category[] @relation("ProductToCategory")
   name       String
   qty        Int
   price      Float
   photo      String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
 }

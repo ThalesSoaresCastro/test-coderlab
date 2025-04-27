@@ -1,4 +1,4 @@
-import { EditProduct, Product } from '../common/types';
+import { EditProduct, Product, CreateProduct } from '../common/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const URL_BASE = `${API_BASE_URL}/product`;
@@ -20,7 +20,27 @@ const fetchProductByID = async (id:string): Promise<Product> => {
     return data;
 };
 
-const fetchProductUpdateByID = async (product: EditProduct, id: string): Promise<Product[]> => {
+const fetchProductCreate = async (product: CreateProduct): Promise<Product> => {
+  const response = await fetch(URL_BASE, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(product),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`Erro ao atualizar o produto: ${response.status} - ${JSON.stringify(errorData)}`);
+  }
+
+  const data: Product = await response.json();
+  return data;
+};
+
+
+
+const fetchProductUpdateByID = async (product: EditProduct, id: string): Promise<Product> => {
   const response = await fetch(`${URL_BASE}/${id}`, {
     method: 'PATCH',
     headers: {
@@ -34,7 +54,7 @@ const fetchProductUpdateByID = async (product: EditProduct, id: string): Promise
     throw new Error(`Erro ao atualizar o produto: ${response.status} - ${JSON.stringify(errorData)}`);
   }
 
-  const data: Product[] = await response.json();
+  const data: Product = await response.json();
   return data;
 };
 
@@ -58,5 +78,6 @@ export {
     fetchProducts, 
     fetchProductByID, 
     fetchProductUpdateByID, 
-    fetchProductDelete 
+    fetchProductDelete,
+    fetchProductCreate
 };
