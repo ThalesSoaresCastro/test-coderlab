@@ -5,6 +5,7 @@ config();
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1, "Database URL is required"),
+  PRISMA_CLIENT_OUTPUT_DIR: z.string().min(1, "Output dir of prisma client is required"),
   API_PORT: z.string().optional().default("3000"),
 
 });
