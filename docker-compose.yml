@@ -31,7 +31,6 @@ services:
       - db
     restart: unless-stopped
     entrypoint: /entrypoint.sh
-    #command: []
 
   frontend:
     build:
